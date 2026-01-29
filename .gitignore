@@ -1,0 +1,27 @@
+# .gitignore para Engine Customizada Tosca
+
+## Binários e Objetos
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Rider / IntelliJ
+.idea/
+*.sln.iml
+
+## Tosca / Arquivos Temporários
+*.log
+log_output.txt
+build_log.txt
+CHECKLIST_DIAGNOSTICO.md
+SOLUCAO_TOSCA_2024.2.md
+
+## .NET Core / SDK
+.template.config/
+.gemini/
