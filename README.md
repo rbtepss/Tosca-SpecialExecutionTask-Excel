@@ -21,7 +21,7 @@ O objetivo principal desta engine é permitir a leitura dinâmica de dados de pl
 
 1. **Clone o repositório**:
    ```bash
-   git clone https://github.com/seu-usuario/Tosca-Excel-Engine.git
+   git clone https://github.com/rbtepss/Tosca-SpecialExecutionTask-Excel.git
    ```
 
 2. **Ajuste as Referências**:
