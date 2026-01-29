@@ -10,6 +10,7 @@ O objetivo principal desta engine é permitir a leitura dinâmica de dados de pl
 - **Leitura Baseada em Ocorrência**: Permite selecionar qual linha de dados ler através do parâmetro `Occurrence` (útil para loops).
 - **Mapeamento Automático**: Transforma o cabeçalho das colunas (Linha 1) em nomes de Buffers automaticamente.
 - **Feedback Visual**: Mensagens detalhadas no ScratchBook indicando quais dados foram lidos.
+- **Soma Simples em Parâmetros**: Aceita expressões como `1+1` no campo `Occurrence`, facilitando incrementos manuais.
 
 ## 📋 Pré-requisitos
 
@@ -51,7 +52,7 @@ Crie os seguintes atributos e marque-os como `Configuration -> Parameter = true`
 - `Path`: Caminho do arquivo .xlsx.
 - `WorkSheet`: Nome da aba da planilha.
 - `TC Name`: Identificador (Coluna A) que o engine deve buscar.
-- `Occurrence`: (Opcional) Número da ocorrência (Ex: `{REPETITION:1}`).
+- `Occurrence`: (Opcional) Número da ocorrência ou expressão de soma (Ex: `{REPETITION:1}` ou `1+1`).
 - `Action`: (Opcional) Use `Count` para apenas contar linhas ou deixe vazio para ler.
 
 ## 📖 Como Usar (Exemplo Prático)

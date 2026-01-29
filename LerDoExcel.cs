@@ -13,7 +13,6 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace ToscaCustom.ExcelEngine
 {
-    
     /// <summary>
     /// Engine customizada para o Tricentis Tosca (TBox SDK).
     /// Esta classe permite ler dados de uma planilha Excel e transformá-los em Buffers dinamicamente.
@@ -55,12 +54,16 @@ namespace ToscaCustom.ExcelEngine
                     "Missing mandatory arguments: Path, WorkSheet, or TC Name.");
             }
 
+            // ===== AJUSTE: Occurrence aceita número OU soma simples (ex.: "1+1", "2 + 1") =====
             int occurrence = 1;
             if (!string.IsNullOrWhiteSpace(occurrenceVal))
             {
-                if (!int.TryParse(occurrenceVal, out occurrence))
+                if (!TryParseOccurrence(occurrenceVal, out occurrence))
                 {
-                    string hint = occurrenceVal.Contains("[") ? " Tente usar {REPETITION} com chaves em vez de colchetes." : "";
+                    string hint = occurrenceVal.Contains("[")
+                        ? " Tente usar {REPETITION} com chaves em vez de colchetes."
+                        : " Aceita também soma simples tipo '1+1'.";
+
                     return new UnknownFailedActionResult(
                         $"Valor inválido para Occurrence: '{occurrenceVal}'. Deve ser um número.{hint}");
                 }
@@ -208,6 +211,36 @@ namespace ToscaCustom.ExcelEngine
             }
         }
 
+        // ===== AJUSTE: parse do Occurrence aceita número OU soma simples =====
+        private static bool TryParseOccurrence(string input, out int result)
+        {
+            result = 0;
+            if (string.IsNullOrWhiteSpace(input)) return false;
+
+            // 1) número puro
+            if (int.TryParse(input.Trim(), out result))
+                return true;
+
+            // 2) aceita soma simples: "1+1" / "1 + 1 + 2"
+            string s = input.Replace(" ", "");
+            if (!s.Contains("+")) return false;
+
+            var parts = s.Split(new[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length < 2) return false;
+
+            int sum = 0;
+            foreach (var p in parts)
+            {
+                if (!int.TryParse(p, out int n))
+                    return false;
+
+                sum += n;
+            }
+
+            result = sum;
+            return true;
+        }
+
         private static string GetCellValue(SpreadsheetDocument doc, Cell cell)
         {
             if (cell == null) return string.Empty;
@@ -262,4 +295,3 @@ namespace ToscaCustom.ExcelEngine
         }
     }
 }
- 

@@ -183,6 +183,32 @@ Se este erro aparecer, significa que o folder **Fluxo** não está com a repeti�
 
 ---
 
+### 6. Uso Avançado: While Loop com Fluxo Completo (Pre/Flow/Pos)
+
+Se você precisa de um controle mais granular ou quer executar **Pré-Condições** e **Pós-Condições** para *cada* linha de dados (ex: Abrir o sistema, testar, e fechar o sistema para cada usuário), a estrutura de `Repetition` simples pode não ser suficiente. Nesses casos, use um **While Loop**.
+
+**Estrutura Recomendada no Tosca:**
+
+1.  **TestCase** (ou Folder Principal)
+    *   **[Step] Inicializar**: `TBox Set Buffer` -> `Iterator` = `1`
+    *   **[Step] Contar Linhas**: Engine `LerDoExcel` -> `Action` = `Count`
+    *   **[Loop] While Statement**:
+        *   **Condition**: `{B[Iterator]} <= {B[RowCount]}`
+        *   **[Step] Ler Dados da Linha Atual**:
+            *   Engine `LerDoExcel` -> `Action` = `Read`
+            *   `Occurrence` = `{B[Iterator]}`
+        *   **[Folder] Pré-Condição**: (Ex: Login, Navegar para Home, Resetar Estado)
+        *   **[Folder] Fluxo Principal**: (Seus passos de teste usando os buffers `{B[Usuario]}`, `{B[Senha]}`, etc.)
+        *   **[Folder] Pós-Condição**: (Ex: Logout, Fechar Janela, Voltar para Busca)
+        *   **[Step] Incrementar**: `TBox Set Buffer` -> `Iterator` = `{MATH[{B[Iterator]} + 1]}`
+
+**Por que usar assim?**
+*   **Controle Total**: Você garante que o pré/pós teste roda para cada linha de dados.
+*   **Recuperação**: Se um teste falhar no meio, a Pós-Condição ainda pode tentar limpar o ambiente para a próxima iteração (se configurado corretamente o Recovery).
+*   **Depuração**: Você pode alterar o valor do buffer `Iterator` manualmente para pular linhas ou re-testar uma linha específica.
+
+---
+
 ### 5. Exemplo de Preenchimento (Sintaxe)
 
 Você pode preencher os campos usando valores fixos ou referências do Tosca:
@@ -192,7 +218,7 @@ Você pode preencher os campos usando valores fixos ou referências do Tosca:
 | **Path** | `{CP[CaminhoExcel]}` | Pega de um Configuration Parameter |
 | **WorkSheet** | `CalculoFrete` | Nome fixo da aba |
 | **TC Name** | `{TestCase.Name}` | Pega o nome do Test Case atual do Tosca |
-| **Occurrence**| `1` | Pega a primeira ocorrência |
+| **Occurrence**| `1` ou `1+1` | Pega a ocorrência (aceita soma simples) |
 | **Action** | `Read` | Lê os dados (Comportamento padrão) |
 
 > [!TIP]
